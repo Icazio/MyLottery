@@ -7,3 +7,23 @@
         <package name="cn.icarus.lottery.infrastructure.po.Activity"/>
     </typeAliases>
 </configuration>
+
+
+<!--这是一个名为mybatis-config.xml的MyBatis配置文件，以下是逐行解释：
+
+<?xml version="1.0" encoding="UTF-8"?>
+这是一个XML文件的声明，指定了XML的版本和编码方式。
+
+<!DOCTYPE configuration
+     PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-config.dtd">
+这是DTD文件的声明，指定了XML文档使用的DTD规范。
+
+<configuration>
+这是一个根元素，表示整个MyBatis配置文件。
+<typeAliases>
+这是一个子元素，用于配置类型别名。
+<package name="cn.icarus.lottery.infrastructure.po.Activity"/>
+这是一个typeAliases子元素，它将cn.icarus.lottery.infrastructure.po.Activity包下的所有类都注册为类型别名。这样，在MyBatis的映射文件中可以直接使用这些类名作为参数和返回值的类型，而不必使用完整的类名。
+</configuration>
+这个元素表示MyBatis配置文件的结束。->
