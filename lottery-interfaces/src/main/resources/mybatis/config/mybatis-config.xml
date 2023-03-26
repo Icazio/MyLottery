@@ -26,4 +26,4 @@
 <package name="cn.icarus.lottery.infrastructure.po.Activity"/>
 这是一个typeAliases子元素，它将cn.icarus.lottery.infrastructure.po.Activity包下的所有类都注册为类型别名。这样，在MyBatis的映射文件中可以直接使用这些类名作为参数和返回值的类型，而不必使用完整的类名。
 </configuration>
-这个元素表示MyBatis配置文件的结束。->
+这个元素表示MyBatis配置文件的结束。-->
