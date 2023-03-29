@@ -19,8 +19,8 @@ import java.util.Date;
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class ApiTest {
-    private Logger logger= LoggerFactory.getLogger(ApiTest.class);
+public class ApiTest4Activity {
+    private Logger logger= LoggerFactory.getLogger(ApiTest4Activity.class);
 
     @Resource
     IActivityDao activityDao;

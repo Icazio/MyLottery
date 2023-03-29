@@ -3,6 +3,7 @@ package cn.icarus.lottery.domain.strategy.model.vo;
 import java.math.BigDecimal;
 
 /**
+ * @author Icarus
  * @description
  * @date 2023/3/25 12:21
  */

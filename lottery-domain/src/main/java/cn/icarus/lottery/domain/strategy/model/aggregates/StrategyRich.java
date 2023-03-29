@@ -6,15 +6,16 @@ import cn.icarus.lottery.infrastructure.po.StrategyDetail;
 import java.util.List;
 
 /**
+ * @author Icarus
  * @description
  * @date 2023/3/23 15:50
  */
 public class StrategyRich {
-    //策略Id
+    /**策略Id*/
     private Long strategyId;
-    //策略配置
+    /**策略配置*/
     private Strategy strategy;
-    //策略明细
+    /**策略明细*/
     private List<StrategyDetail> strategyDetailList;
 
     public StrategyRich() {

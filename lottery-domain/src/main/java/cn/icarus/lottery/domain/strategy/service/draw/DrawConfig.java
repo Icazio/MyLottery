@@ -1,5 +1,6 @@
 package cn.icarus.lottery.domain.strategy.service.draw;
 
+import cn.icarus.lottery.common.Constants;
 import cn.icarus.lottery.domain.strategy.service.algorithm.IDrawAlgorithm;
 
 import javax.annotation.PostConstruct;
@@ -8,22 +9,24 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description
+ * @author Icarus
+ * @description 抽奖统一配置信息类
  * @date 2023/3/25 12:31
  */
 
 public class DrawConfig {
     @Resource
-    private IDrawAlgorithm defaultRateRandomDrawAlgorithm;
+    private IDrawAlgorithm entiretyRateRandomDrawAlgorithm;
 
     @Resource
     private IDrawAlgorithm singleRateRandomDrawAlgorithm;
 
-    protected static Map<Integer,IDrawAlgorithm> drawAlgorithmMap=new ConcurrentHashMap<>();
+    /**抽奖策略组*/
+    protected static Map<Integer,IDrawAlgorithm> drawAlgorithmGroup=new ConcurrentHashMap<>();
 
     @PostConstruct
     public void init(){
-        drawAlgorithmMap.put(1,defaultRateRandomDrawAlgorithm);
-        drawAlgorithmMap.put(2,singleRateRandomDrawAlgorithm);
+        drawAlgorithmGroup.put(Constants.StrategyMode.ENTIRETY.getCode(),entiretyRateRandomDrawAlgorithm);
+        drawAlgorithmGroup.put(Constants.StrategyMode.SINGLE.getCode(), singleRateRandomDrawAlgorithm);
     }
 }

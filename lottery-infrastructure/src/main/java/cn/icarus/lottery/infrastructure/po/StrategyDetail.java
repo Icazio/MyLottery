@@ -3,29 +3,31 @@ package cn.icarus.lottery.infrastructure.po;
 import java.math.BigDecimal;
 
 /**
- * 策略明细
+ * @author Icarus
+ * @description  策略明细
+ * @date 2023/3/26
  */
 public class StrategyDetail {
 
-    // 自增ID
+    /**自增ID*/
     private String id;
 
-    // 策略ID
+    /**策略ID*/
     private Long strategyId;
 
-    // 奖品ID
+    /**奖品ID*/
     private String awardId;
 
-    // 奖品数量
+    /**奖品数量*/
     private String awardCount;
 
-    // 中奖概率
+    /**中奖概率*/
     private BigDecimal awardRate;
 
-    // 创建时间
+    /**创建时间*/
     private String createTime;
 
-    // 修改时间
+    /** 修改时间*/
     private String updateTime;
 
     public String getId() {
