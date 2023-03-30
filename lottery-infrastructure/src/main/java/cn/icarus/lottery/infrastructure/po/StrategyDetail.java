@@ -18,8 +18,14 @@ public class StrategyDetail {
     /**奖品ID*/
     private String awardId;
 
+    /**奖品名称*/
+    private String awardName;
+
     /**奖品数量*/
-    private String awardCount;
+    private Integer awardCount;
+
+    /**奖品剩余数量*/
+    private Integer awardSurplusCount;
 
     /**中奖概率*/
     private BigDecimal awardRate;
@@ -29,6 +35,30 @@ public class StrategyDetail {
 
     /** 修改时间*/
     private String updateTime;
+
+    public String getAwardName() {
+        return awardName;
+    }
+
+    public Integer getAwardCount() {
+        return awardCount;
+    }
+
+    public void setAwardName(String awardName) {
+        this.awardName = awardName;
+    }
+
+    public void setAwardCount(Integer awardCount) {
+        this.awardCount = awardCount;
+    }
+
+    public Integer getAwardSurplusCount() {
+        return awardSurplusCount;
+    }
+
+    public void setAwardSurplusCount(Integer awardSurplusCount) {
+        this.awardSurplusCount = awardSurplusCount;
+    }
 
     public String getId() {
         return id;
@@ -54,13 +84,6 @@ public class StrategyDetail {
         this.awardId = awardId;
     }
 
-    public String getAwardCount() {
-        return awardCount;
-    }
-
-    public void setAwardCount(String awardCount) {
-        this.awardCount = awardCount;
-    }
 
     public BigDecimal getAwardRate() {
         return awardRate;

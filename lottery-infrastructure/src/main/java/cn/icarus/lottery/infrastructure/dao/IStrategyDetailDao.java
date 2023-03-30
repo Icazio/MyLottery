@@ -17,7 +17,7 @@ public interface IStrategyDetailDao {
      * @param strategyId    策略ID
      * @return              返回结果
      */
-    List<StrategyDetail> queryStrategyDetailInfo(Long strategyId);
+    List<StrategyDetail> queryStrategyDetailList(Long strategyId);
 
     /**
      * 查询无库存策略奖品ID

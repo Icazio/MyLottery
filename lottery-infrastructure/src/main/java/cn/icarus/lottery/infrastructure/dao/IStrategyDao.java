@@ -5,5 +5,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface IStrategyDao {
-    Strategy queryStrategyInfo(Long strategyId);
+    Strategy queryStrategy(Long strategyId);
 }

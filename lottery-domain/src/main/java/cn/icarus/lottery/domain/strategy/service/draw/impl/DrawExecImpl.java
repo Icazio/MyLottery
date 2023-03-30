@@ -15,7 +15,7 @@ import java.util.List;
  * @description 抽奖过程方法实现
  * @date 2023/3/25 23:06
  */
-@Service("drawExec")
+@Service("iDrawExec")
 public class DrawExecImpl extends AbstractDrawBase implements IDrawExec {
 
     private Logger logger= LoggerFactory.getLogger(DrawExecImpl.class);

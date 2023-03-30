@@ -16,6 +16,7 @@ import java.util.Map;
 //@SpringBootTest+
 public class ApiTest4domain {
 
+
     @Test
     public void test_strategy(){
         SecureRandom random=new SecureRandom();

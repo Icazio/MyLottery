@@ -32,10 +32,10 @@ public abstract class AbstractDrawBase extends DrawStrategySupport implements ID
         Strategy strategy=strategyRich.getStrategy();
 
         //2.校验抽奖策略是否已经初始化到内存
-        this.checkAndInitRateData(strategy.getStrategyId(),strategy.getStrategyMode(),strategyRich.getStrategyDetailList());
+        this.checkAndInitRateData(req.getStrategyId(),strategy.getStrategyMode(),strategyRich.getStrategyDetailList());
 
         //3.获取不在抽奖范围里的列表
-        List<String> excludeAwardIds = this.queryExcludeAwardIds(strategyRich.getStrategyId());
+        List<String> excludeAwardIds = this.queryExcludeAwardIds(req.getStrategyId());
 
         //4.执行抽奖算法
         String awardId = this.drawAlgorithm(req.getStrategyId(), drawAlgorithmGroup.get(strategy.getStrategyMode()), excludeAwardIds);
@@ -104,13 +104,13 @@ public abstract class AbstractDrawBase extends DrawStrategySupport implements ID
      * @return  中奖结果
      */
     private DrawResult buildDrawResult(String uId,Long strategyId, String awardId){
-        if(awardId==null){
-            logger.info("执行策略抽奖完成【未抽奖】，用户：{} 策略ID：{}",uId,strategyId);
-            return new DrawResult(uId,strategyId,Constants.DrawState.FAIL.getCode());
+        if (null == awardId) {
+            logger.info("执行策略抽奖完成【未中奖】，用户：{} 策略ID：{}", uId, strategyId);
+            return new DrawResult(uId, strategyId, Constants.DrawState.FAIL.getCode());
         }
 
-        Award award=super.queryAwardInfoByAwardId(awardId);
-        DrawAwardInfo drawAwardInfo=new DrawAwardInfo(award.getAwardId(),award.getAwardName());
+        Award award = super.queryAwardInfoByAwardId(awardId);
+        DrawAwardInfo drawAwardInfo = new DrawAwardInfo(award.getAwardId(), award.getAwardType(), award.getAwardName(), award.getAwardContent());
         logger.info("执行策略抽奖完成【已中奖】，用户：{} 策略ID：{} 奖品ID：{} 奖品名称：{}", uId, strategyId, awardId, award.getAwardName());
 
         return new DrawResult(uId,strategyId,Constants.DrawState.SUCCESS.getCode(),drawAwardInfo);

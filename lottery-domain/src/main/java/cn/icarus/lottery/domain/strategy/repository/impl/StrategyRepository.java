@@ -31,8 +31,8 @@ public class StrategyRepository implements IStrategyRepository {
 
     @Override
     public StrategyRich queryStrategyRich(Long strategyId) {
-        Strategy strategy=strategyDao.queryStrategyInfo(strategyId);
-        List<StrategyDetail> strategyDetailList=strategyDetailDao.queryStrategyDetailInfo(strategyId);
+        Strategy strategy=strategyDao.queryStrategy(strategyId);
+        List<StrategyDetail> strategyDetailList=strategyDetailDao.queryStrategyDetailList(strategyId);
         return new StrategyRich(strategyId,strategy,strategyDetailList);
     }
 
