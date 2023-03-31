@@ -1,4 +1,4 @@
-package cn.icarus.lottery.domain.award.repository.impl;
+package cn.icarus.lottery.infrastructure.repository;
 
 import cn.icarus.lottery.domain.award.repository.IAwardRepository;
 import org.springframework.stereotype.Component;

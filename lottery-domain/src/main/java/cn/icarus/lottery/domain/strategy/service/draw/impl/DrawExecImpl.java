@@ -35,10 +35,10 @@ public class DrawExecImpl extends AbstractDrawBase implements IDrawExec {
     @Override
     protected String drawAlgorithm(Long strategyId, IDrawAlgorithm drawAlgorithm, List<String> excludeAwardIds) {
         //执行抽奖
-        String awardID=drawAlgorithm.randomDraw(strategyId,excludeAwardIds);
+        String awardId=drawAlgorithm.randomDraw(strategyId,excludeAwardIds);
 
         //判断抽奖结果
-        if(awardID==null) {
+        if(awardId==null) {
             return null;
         }
 
@@ -46,8 +46,8 @@ public class DrawExecImpl extends AbstractDrawBase implements IDrawExec {
          * 扣减库存，暂时采用数据库行级锁的方式进行扣减库存，后续优化为Redis分布式锁扣减decr/incr
          * 注意：通常数据库直接锁行记录的方式并不能支撑较大体量的并发，但此种方式需要了解，因为在分库分表下的正常数据流量下的个人数据记录中，是可以使用行级锁的，因为他只影响到自己的记录，不会影响到其他人
          */
-        boolean isSuccess=strategyRepository.deductStock(strategyId,awardID);
+        boolean isSuccess=strategyRepository.deductStock(strategyId,awardId);
 
-        return isSuccess?awardID:null;
+        return isSuccess?awardId:null;
     }
 }

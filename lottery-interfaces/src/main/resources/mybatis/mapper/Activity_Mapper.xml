@@ -39,6 +39,12 @@ parameterType 属性指定了该 SQL 语句接受的参数类型为 cn.icarus.lo
              #{stockCount}, #{takeCount}, #{state}, #{creator}, now(), now())
     </insert>
 
+    <update id="alterState" parameterType="cn.icarus.lottery.domain.activity.model.vo.AlterStateVO">
+        UPDATE activity
+        SET state = #{afterState}
+        WHERE activity_id = #{activityId} AND state = #{beforeState}
+    </update>
+
     <!--<select> 标签定义了一个名为 queryActivityById 的 SQL 语句，用于根据 activity_id 查询一条 Activity 记录。
     parameterType 属性指定了该 SQL 语句接受的参数类型为 java.lang.Long。-->
     <select id="queryActivityById" parameterType="java.lang.Long" resultMap="activity">
