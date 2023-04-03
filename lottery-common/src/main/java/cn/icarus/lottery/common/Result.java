@@ -3,6 +3,7 @@ package cn.icarus.lottery.common;
 import java.io.Serializable;
 
 /**
+ * @author Icarus
  * @description
  * @date 2023/3/20 14:48
  */
@@ -20,8 +21,8 @@ public class Result implements Serializable {
         return new Result(code.getCode(),info);
     }
 
-    public static Result buildResult(Constants.ResponseCode code,Constants.ResponseCode info){
-        return new Result(code.getCode(),info.getInfo());
+    public static Result buildResult(Constants.ResponseCode code){
+        return new Result(code.getCode(),code.getInfo());
     }
 
     public static Result buildSuccessResult(){

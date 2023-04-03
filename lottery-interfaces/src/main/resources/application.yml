@@ -1,14 +1,31 @@
 server:
   port: 8080
 
-
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/lottery?useUnicode=true
-    driver-class-name: com.mysql.jdbc.Driver
-    username: root
-    password: root
-
+# 多数据源路由配置
+# 凡注册到Spring容器内的bean，实现了EnvironmentAware接口重写setEnvironment方法后，在工程启动时可以获得application.properties的配置文件配置的属性值。
+mini-db-router:
+  jdbc:
+    datasource:   #prifix
+      dbCount: 2  #共有两个数据库
+      tbCount: 4  #共有4张表
+      default: db00  #默认库
+      routerKey: uId  #路由字段
+      list: db01,db02
+      db00:  #配置库1
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/lottery?useUnicode=true
+        username: root
+        password: root
+      db01: #配置库2
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/lottery_01?useUnicode=true
+        username: root
+        password: root
+      db02: #配置库3
+        driver-class-name: com.mysql.jdbc.Driver
+        url: jdbc:mysql://127.0.0.1:3306/lottery_02?useUnicode=true
+        username: root
+        password: root
 
 mybatis:
   mapper-locations: classpath:/mybatis/mapper/*.xml

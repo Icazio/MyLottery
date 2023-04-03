@@ -1,4 +1,4 @@
-package cn.icarus.lottery.test;
+package cn.icarus.lottery.test.domain;
 
 import cn.icarus.lottery.common.Constants;
 import cn.icarus.lottery.domain.support.ids.IIdGenerator;
@@ -29,7 +29,7 @@ public class SupportTest {
 
     @Test
     public void test_ids(){
-        logger.info("雪花算法策略，生成ID：{}", idGeneratorMap.get(Constants.Ids.SnowFlake).nextId());
+        logger.info("雪花算法策略，生成ID：{}",idGeneratorMap.get(Constants.Ids.SnowFlake).nextId());
         logger.info("日期算法策略：生成ID：{}",idGeneratorMap.get(Constants.Ids.ShortCode).nextId());
         logger.info("随机算法策略：生成ID：{}",idGeneratorMap.get(Constants.Ids.RandomNumeric).nextId());
     }

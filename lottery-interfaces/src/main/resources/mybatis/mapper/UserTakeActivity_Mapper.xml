@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.icarus.lottery.infrastructure.dao.IUserTakeActivityDao">
+    <resultMap id="userTakeActivityMap" type="cn.icarus.lottery.infrastructure.po.UserTakeActivity">
+        <id column="id" property="id"/>
+        <result column="u_id" property="uId"/><!--用户ID-->
+        <result column="take_id" property="takeId"/><!--用户ID-->
+        <result column="activity_id" property="activityId"/><!--活动ID-->
+        <result column="activity_name" property="activityName"/><!--用户名称-->
+        <result column="take_date" property="takeDate"/><!--活动参与时间-->
+        <result column="take_count" property="takeCount"/><!--活动可参与次数-->
+        <result column="uuid" property="uuid"/><!--防重ID-->
+        <result column="create_time" property="createTime"/><!--创建时间-->
+        <result column="update_time" property="updateTime"/><!--编辑时间-->
+    </resultMap>
+
+    <insert id="insert" parameterType="cn.icarus.lottery.infrastructure.po.UserTakeActivity">
+        INSERT INTO user_take_activity(
+            u_id,take_id,activity_id,activity_name,take_date,
+            take_count,uuid,create_time,update_time
+        )
+        VALUES (#{uId},#{takeId},#{activityId},#{activityName},#{takeDate},
+            #{takeCount},#{uuid},now(),now())
+    </insert>
+
+
+
+
+</mapper>
+

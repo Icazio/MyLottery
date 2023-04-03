@@ -1,4 +1,4 @@
-package cn.icarus.lottery.test;
+package cn.icarus.lottery.test.domain;
 
 import cn.icarus.lottery.domain.strategy.model.vo.AwardRateInfo;
 import cn.icarus.lottery.domain.strategy.service.algorithm.IDrawAlgorithm;

@@ -5,6 +5,7 @@ import cn.icarus.lottery.infrastructure.po.Activity;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
+ * @author Icarus
  * @description 数据访问对象
  * @date 2023/3/19 20:36
  */
@@ -12,7 +13,13 @@ import org.apache.ibatis.annotations.Mapper;
 @Mapper
 public interface IActivityDao {
     void insert(Activity req); //新建数据
-    Activity queryActivityById(Long activityId);  //提供查询操作
+
+    /**
+     * 提供查询操作
+     * @param activityId  活动ID
+     * @return  活动【】
+     */
+    Activity queryActivityById(Long activityId);
 
     /**
      * 变更活动状态
@@ -22,4 +29,11 @@ public interface IActivityDao {
      */
 
     int alterState(AlterStateVO alterStateVO);
+
+    /**
+     * 扣减活动库存
+     * @param activityId 活动id
+     * @return  扣减结果--更新后的stockSurplusCount
+     */
+    int subtractionActivityStock(Long activityId);
 }

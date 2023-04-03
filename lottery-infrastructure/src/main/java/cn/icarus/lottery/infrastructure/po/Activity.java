@@ -1,44 +1,69 @@
 package cn.icarus.lottery.infrastructure.po;
 
-import org.springframework.dao.support.DaoSupport;
-
 import java.util.Date;
 
 /**
- * @description 活动基础信息表
+ * @description 活动基础信息表【id、活动id、活动名称、活动描述、开始时间、结束时间、库存、每人可参与次数、活动状态、创建时间、更新时间、策略ID、剩余库存】
  * @date 2023/3/1920:24
  */
 public class Activity {
-    //自增ID
+    /**自增ID*/
     private Long id;
 
-    //活动ID
+    /**活动ID*/
     private Long activityId;
 
-    //活动名称
+    /**活动名称*/
     private String activityName;
 
-    //活动描述
+    /**活动描述*/
     private String activityDesc;
 
-    //开始时间
+    /**开始时间*/
     private Date beginDateTime;
 
-    //结束时间
+    /**结束时间*/
     private Date endDateTime;
 
-    //库存
+    /**库存*/
     private  Integer stockCount;
-    //每人可参与次数
+
+    /**每人可参与次数*/
     private Integer takeCount;
-    //活动状态：编辑、提审、撤审、通过、运行
+
+    /**活动状态：编辑、提审、撤审、通过、运行*/
     private Integer state;
-    //创建人
+
+    /**创建人*/
     private String creator;
-    //创建时间
+
+    /**创建时间*/
     private Date createTime;
-    //修改时间
+    /**修改时间*/
     private Date updateTime;
+
+    /**策略ID*/
+    private Long strategyId;
+
+    /**剩余库存*/
+    private Integer stockSurplusCount;
+
+
+    public Integer getStockSurplusCount() {
+        return stockSurplusCount;
+    }
+
+    public void setStockSurplusCount(Integer stockSurplusCount) {
+        this.stockSurplusCount = stockSurplusCount;
+    }
+
+    public Long getStrategyId() {
+        return strategyId;
+    }
+
+    public void setStrategyId(Long strategyId) {
+        this.strategyId = strategyId;
+    }
 
     public Long getId() {
         return id;
