@@ -78,14 +78,14 @@ public class ActivityRepository implements IActivityRepository {
 
     @Override
     public ActivityBillVO queryActivityBill(PartakeReq req) {
-        //查询活动信息
+        //去Lottery的activity里查询活动信息
         Activity activity=activityDao.queryActivityById(req.getActivityId());
 
-        //查询领取次数
+        //查询领取次数【用activityId和uId去查totalCount和leftCount】
         UserTakeActivityCount userTakeActivityCountReq=new UserTakeActivityCount();
         userTakeActivityCountReq.setuId(req.getuId());
         userTakeActivityCountReq.setActivityId(req.getActivityId());
-        //是有可能查不到的。
+        //用是有可能查不到的。
         UserTakeActivityCount userTakeActivityCount = userTakeActivityCountDao.queryUserTakeActivityCount(userTakeActivityCountReq);
 
         //封装结果信息

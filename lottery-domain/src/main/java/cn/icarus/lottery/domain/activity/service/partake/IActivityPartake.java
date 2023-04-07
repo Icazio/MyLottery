@@ -1,7 +1,9 @@
 package cn.icarus.lottery.domain.activity.service.partake;
 
+import cn.icarus.lottery.common.Result;
 import cn.icarus.lottery.domain.activity.model.req.PartakeReq;
 import cn.icarus.lottery.domain.activity.model.res.PartakeResult;
+import cn.icarus.lottery.domain.activity.model.vo.DrawOrderVO;
 
 /**
  * @author Icarus
@@ -21,4 +23,11 @@ public interface IActivityPartake {
      *     策略Id strategyId
      */
     PartakeResult doPartake(PartakeReq req);
+
+    /**
+     * 保存奖品单
+     * @param drawOrder 奖品单
+     * @return          保存结果
+     */
+    Result recordDrawOrder(DrawOrderVO drawOrder);
 }

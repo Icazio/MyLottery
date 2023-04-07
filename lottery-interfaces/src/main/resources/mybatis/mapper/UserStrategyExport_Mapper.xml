@@ -39,4 +39,6 @@
         WHERE u_id = #{uId}
     </select>
 
+
+
 </mapper>

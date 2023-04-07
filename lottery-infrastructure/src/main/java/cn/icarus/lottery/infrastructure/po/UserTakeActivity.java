@@ -33,9 +33,9 @@ public class UserTakeActivity {
      */
     private Date takeDate;
     /**
-     * 活动参与次数
+     * 用户参与的次数
      */
-    private Integer takeCount;
+    private Integer takenCount;
     /**
      * 防重ID
      */
@@ -48,6 +48,33 @@ public class UserTakeActivity {
      * 更新时间
      */
     private Date updateTime;
+
+    /**
+     * 活动参与状态：0未参加1已参加
+     */
+    private int state;
+
+    /**
+     * 策略ID
+     */
+    private Long strategyId;
+
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public Long getStrategyId() {
+        return strategyId;
+    }
+
+    public void setStrategyId(Long strategyId) {
+        this.strategyId = strategyId;
+    }
 
     public Long getId() {
         return id;
@@ -97,12 +124,12 @@ public class UserTakeActivity {
         this.takeDate = takeDate;
     }
 
-    public Integer getTakeCount() {
-        return takeCount;
+    public Integer getTakenCount() {
+        return takenCount;
     }
 
-    public void setTakeCount(Integer takeCount) {
-        this.takeCount = takeCount;
+    public void setTakenCount(Integer takenCount) {
+        this.takenCount = takenCount;
     }
 
     public String getUuid() {

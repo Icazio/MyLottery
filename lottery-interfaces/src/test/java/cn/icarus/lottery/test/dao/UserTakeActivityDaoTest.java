@@ -30,7 +30,7 @@ public class UserTakeActivityDaoTest {
         userTakeActivity.setActivityId(100001L);
         userTakeActivity.setActivityName("测试活动");
         userTakeActivity.setTakeDate(new Date());
-        userTakeActivity.setTakeCount(10);
+        userTakeActivity.setTakenCount(10);
         userTakeActivity.setUuid("Uhdgkw766129d");
 
         userTakeActivityDao.insert(userTakeActivity);

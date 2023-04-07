@@ -5,6 +5,7 @@ import cn.icarus.lottery.common.Result;
 import cn.icarus.lottery.domain.activity.model.req.PartakeReq;
 import cn.icarus.lottery.domain.activity.model.res.PartakeResult;
 import cn.icarus.lottery.domain.activity.model.vo.ActivityBillVO;
+import cn.icarus.lottery.domain.activity.model.vo.UserTakeActivityVO;
 
 /**
  * @author Icarus
@@ -24,6 +25,12 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
      *  ④成功：返回的策略ID，用于继续完成抽奖步骤
      */
     public PartakeResult doPartake(PartakeReq req) {
+        //1.查询是否存在未执行抽奖参与活动但【user-take-activity存在state==0，领取了但抽奖过成失败的，可以直接返回参与结果继续抽奖】
+        UserTakeActivityVO noConsumedTakeActivityOrder=this.queryNoConsumedTakeActivityOrder(req.getActivityId(),req.getuId());
+       if(noConsumedTakeActivityOrder!=null){
+           return buildPartakeResult(noConsumedTakeActivityOrder.getStrategyId(),noConsumedTakeActivityOrder.getTakeId());
+       }
+
         //查询活动账单
         //活动账单【库存、状态、日期、个人参与次数】
         //      * 用户ID uId; * 活动ID Long activityId;
@@ -35,7 +42,7 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
         //      * 策略ID Long strategyId;
         //      * 每人可参与次数 Integer takeCount;
         //      * 已参加次数 Integer userTakeLeftCount;
-        ActivityBillVO activityBillVO=super.queryActivityBill(req);
+         ActivityBillVO activityBillVO=super.queryActivityBill(req);
 
         //活动信息校验处理【校验：①状态②日期③活动库存④个人参与次数】
         //进入ActivityPartakeImpl去进行checkActivityBill
@@ -67,7 +74,7 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
         /*可能的返回情况
         *   ①扣减个人已参与次数失败：返回Result(Constants.ResponseCode.NO_UPDATE);
         *   ②参加活动唯一索引冲突：返回Result(Constants.ResponseCode.INDEX_DUP)；
-        *   ③成功
+        *   ③成功--得到Result
         * */
         Result grabResult=this.grabActivity(req,activityBillVO);
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(grabResult.getCode())) {
@@ -82,6 +89,7 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
 
 
     //以下全都是辅助上面的那个方法，放在实现里面去完成
+
     /**
      * 活动信息校验处理，把活动库存、状态、日期、个人参与次数
      * @param partake 参与活动请求
@@ -98,10 +106,33 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
     protected abstract Result subtractionActivityStock(PartakeReq req);
 
     /**
-     * 领取活动
+     * 获取参与单号:用雪花算法生成器生成一个单号
+     * 将这个参与的这次记录【ActivityId(), getActivityName(),TakeCount(), UserTakeLeftCount, uId，PartakeDate, takeId】插入user_take_activity表中
      * @param partake 参与活动请求
      * @param bill     活动账单
-     * @return          领取结果
+     * @return
      */
     protected abstract Result grabActivity(PartakeReq partake,ActivityBillVO bill);
+
+    /**
+     * 查询未参与的订单
+     * @param activityId
+     * @param uId
+     * @return
+     */
+    protected abstract UserTakeActivityVO queryNoConsumedTakeActivityOrder(Long activityId, String uId);
+
+    /**
+     *
+     * @param strategyId    策略ID
+     * @param takeId        领取ID
+     * @return              装起来
+     */
+    private  PartakeResult  buildPartakeResult(Long strategyId,Long takeId){
+        PartakeResult partakeResult=new PartakeResult(Constants.ResponseCode.SUCCESS.getCode(),Constants.ResponseCode.SUCCESS.getInfo());
+        partakeResult.setStrategyId(strategyId);
+        partakeResult.setTakeId(takeId);
+        return partakeResult;
+    }
+
 }

@@ -4,6 +4,8 @@ import cn.icarus.lottery.common.Constants;
 import cn.icarus.lottery.common.Result;
 import cn.icarus.lottery.domain.activity.model.req.PartakeReq;
 import cn.icarus.lottery.domain.activity.model.vo.ActivityBillVO;
+import cn.icarus.lottery.domain.activity.model.vo.DrawOrderVO;
+import cn.icarus.lottery.domain.activity.model.vo.UserTakeActivityVO;
 import cn.icarus.lottery.domain.activity.repository.IUserTakeActivityRepository;
 import cn.icarus.lottery.domain.activity.service.partake.BaseActivityPartake;
 import cn.icarus.lottery.domain.support.ids.IIdGenerator;
@@ -25,6 +27,7 @@ import java.util.Map;
 @Service(value="activityPartake")
 public class ActivityPartakeImpl extends BaseActivityPartake {
 
+
     private Logger logger= LoggerFactory.getLogger(ActivityPartakeImpl.class);
 
     @Resource
@@ -36,6 +39,11 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
     /**所需要的ID类型和它对应的生成器*/
     @Resource
     private Map<Constants.Ids, IIdGenerator> idGeneratorMap;
+
+    @Override
+    protected UserTakeActivityVO queryNoConsumedTakeActivityOrder(Long activityId, String uId) {
+        return userTakeActivityRepository.queryNoConsumedTakeActivityOrder(activityId, uId);
+    }
 
     @Override
     protected Result checkActivityBill(PartakeReq partake, ActivityBillVO bill) {
@@ -67,7 +75,7 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
 
         // 校验：个人库存 - 个人活动剩余可领取次数
         //如果个人活动剩余可领取次数小于等于0
-        if (bill.getUserTakeLeftCount() <= 0) {
+        if (null != bill.getUserTakeLeftCount() && bill.getUserTakeLeftCount() <= 0) {
             //那么个人领取次数非可用，将活动当前的个人活动剩余可领取次数存记录到日志中
             logger.warn("个人领取次数非可用 userTakeLeftCount：{}", bill.getUserTakeLeftCount());
             //返回结果
@@ -91,7 +99,13 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
     }
 
 
-
+    /**
+     * 获取参与单号:用雪花算法生成器生成一个单号
+     * 将这个参与的这次记录【ActivityId(), getActivityName(),TakeCount(), UserTakeLeftCount, uId，PartakeDate, takeId】插入user_take_activity表中
+     * @param partake 参与活动请求
+     * @param bill     活动账单
+     * @return Result.buildSuccessResult
+     */
     @Override
     protected Result grabActivity(PartakeReq partake, ActivityBillVO bill) {
         try {
@@ -116,7 +130,7 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
                     //获取参与的单号:得到了雪花算法的生成器，用雪花算法生成器生成一个单号
                     Long takeId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
                     //将这个参与的这次记录插入user_take_activity表中
-                    userTakeActivityRepository.takeActivity(bill.getActivityId(), bill.getActivityName(), bill.getTakeCount(), bill.getUserTakeLeftCount(), partake.getuId(), partake.getPartakeDate(), takeId);
+                    userTakeActivityRepository.takeActivity(bill.getActivityId(), bill.getActivityName(), bill.getStrategyId(), bill.getTakeCount(), bill.getUserTakeLeftCount(), partake.getuId(), partake.getPartakeDate(), takeId);
                 } catch (DuplicateKeyException e) {
                     status.setRollbackOnly();
                     logger.error("领取活动，唯一索引冲突 activityId：{} uId：{}", partake.getActivityId(), partake.getuId(), e);
@@ -126,6 +140,34 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
             });
         } finally {
                 dbRouter.clear();
+        }
+    }
+
+
+    @Override
+    public Result recordDrawOrder(DrawOrderVO drawOrder) {
+        try {
+            dbRouter.doRouter(drawOrder.getuId());
+            return transactionTemplate.execute(status -> {
+                try {
+                    //锁定活动领取记录【方法：将state从0改成1--说明已经完成了，于是上锁】
+                    int lockCount = userTakeActivityRepository.lockTackActivity(drawOrder.getuId(),drawOrder.getActivityId(), drawOrder.getTakeId());
+                    if (0 == lockCount) {
+                        status.setRollbackOnly();
+                        logger.error("记录中奖单，个人参与活动抽奖已消耗完 activityId:{} uId:{}", drawOrder.getActivityId(), drawOrder.getuId());
+                        return Result.buildResult(Constants.ResponseCode.NO_UPDATE);
+                    }
+                    //存到user_take_export里
+                    userTakeActivityRepository.saveUserStrategyExport(drawOrder);
+                } catch (DuplicateKeyException e) {
+                    status.setRollbackOnly();
+                    logger.error("记录中奖单，唯一索引冲突 activityId：{} uId：{}", drawOrder.getActivityId(), drawOrder.getuId());
+                    return Result.buildResult(Constants.ResponseCode.INDEX_DUP);
+                }
+                return Result.buildSuccessResult();
+            });
+        }finally {
+            dbRouter.clear();
         }
     }
 }
