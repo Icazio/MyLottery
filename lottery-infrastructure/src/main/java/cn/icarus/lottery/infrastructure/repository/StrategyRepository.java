@@ -12,7 +12,7 @@ import cn.icarus.lottery.infrastructure.po.Award;
 import cn.icarus.lottery.infrastructure.po.Strategy;
 import cn.icarus.lottery.infrastructure.po.StrategyDetail;
 import org.springframework.beans.BeanUtils;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import java.util.List;
  * @description
  * @date 2023/3/26 16:03
  */
-@Component
+@Repository
 public class StrategyRepository implements IStrategyRepository {
 
     @Resource

@@ -5,12 +5,12 @@ import cn.icarus.lottery.domain.activity.model.vo.DrawOrderVO;
 import cn.icarus.lottery.domain.activity.model.vo.UserTakeActivityVO;
 import cn.icarus.lottery.domain.activity.repository.IUserTakeActivityRepository;
 import cn.icarus.lottery.infrastructure.dao.IUserStrategyExportDao;
-import cn.icarus.lottery.infrastructure.dao.IUserTakeActivityDao;
 import cn.icarus.lottery.infrastructure.dao.IUserTakeActivityCountDao;
+import cn.icarus.lottery.infrastructure.dao.IUserTakeActivityDao;
 import cn.icarus.lottery.infrastructure.po.UserStrategyExport;
 import cn.icarus.lottery.infrastructure.po.UserTakeActivity;
 import cn.icarus.lottery.infrastructure.po.UserTakeActivityCount;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.Date;
@@ -20,7 +20,7 @@ import java.util.Date;
  * @description
  * @date 2023/4/2 14:22
  */
-@Component
+@Repository
 public class UserTakeActivityRepository implements IUserTakeActivityRepository {
 
     @Resource

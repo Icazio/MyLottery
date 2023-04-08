@@ -48,7 +48,6 @@ public class ActivityProcessImpl implements IActivityProcess {
         Long takeId=partakeResult.getTakeId();
 
 
-
       // 2. 执行抽奖
         DrawResult drawResult = drawExec.doDrawExec(new DrawReq(req.getuId(), strategyId, String.valueOf(takeId)));
         //如果抽奖失败
