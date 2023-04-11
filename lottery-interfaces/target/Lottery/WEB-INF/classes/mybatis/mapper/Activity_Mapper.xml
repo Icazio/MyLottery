@@ -5,7 +5,7 @@
 <!--<mapper> 标签指定了这个 XML 文件是 MyBatis 的 Mapper 配置文件。
 namespace 属性指定了这个 Mapper 对应的 Java 接口，这里是 cn.icarus.lottery.infrastructure.dao.IActivityDao。-->
 
-    <resultMap id="activity" type="cn.icarus.lottery.infrastructure.po.Activity">
+    <resultMap id="activityMap" type="cn.icarus.lottery.infrastructure.po.Activity">
         <!--<resultMap> 标签用于定义一个名为activity的结果映射，它将 Activity 表的各个字段与 Activity 对象的属性进行了映射关联。
         id 属性指定了这个结果映射的名称，这里是 activity。
         type 属性指定了映射的目标 Java 类型，这里是 cn.icarus.lottery.infrastructure.po.Activity。-->
@@ -21,7 +21,9 @@ namespace 属性指定了这个 Mapper 对应的 Java 接口，这里是 cn.icar
         <result column="begin_date_time" property="beginDateTime"/>
         <result column="end_date_time" property="endDateTime"/>
         <result column="stock_count" property="stockCount"/>
+        <result column="stock_surplus_count" property="stockSurplusCount"/>
         <result column="take_count" property="takeCount"/>
+        <result column="strategy_id" property="strategyId"/>
         <result column="state" property="state"/>
         <result column="creator" property="creator"/>
         <result column="create_time" property="createTime"/>
@@ -33,20 +35,33 @@ parameterType 属性指定了该 SQL 语句接受的参数类型为 cn.icarus.lo
     <insert id="insert" parameterType="cn.icarus.lottery.infrastructure.po.Activity">
         INSERT INTO activity
         (activity_id, activity_name, activity_desc, begin_date_time, end_date_time,
-         stock_count, take_count, state, creator, create_time, update_time)
+         stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time)
         VALUES
-            (#{activityId}, #{activityName}, #{activityDesc}, #{beginDateTime}, #{endDateTime},
-             #{stockCount}, #{takeCount}, #{state}, #{creator}, now(), now())
+            (#{activityId}, #{activityName}, #{activityDesc},#{beginDateTime}, #{endDateTime},
+             #{stockCount}, #{stockSurplusCount}, #{takeCount}, #{strategyId}, #{state}, #{creator}, now(), now())
     </insert>
+
+    <update id="alterState" parameterType="cn.icarus.lottery.domain.activity.model.vo.AlterStateVO">
+        UPDATE activity
+        SET state = #{afterState}
+        WHERE activity_id = #{activityId} AND state = #{beforeState}
+    </update>
 
     <!--<select> 标签定义了一个名为 queryActivityById 的 SQL 语句，用于根据 activity_id 查询一条 Activity 记录。
     parameterType 属性指定了该 SQL 语句接受的参数类型为 java.lang.Long。-->
-    <select id="queryActivityById" parameterType="java.lang.Long" resultMap="activity">
+    <select id="queryActivityById" parameterType="java.lang.Long" resultMap="activityMap">
         SELECT activity_id, activity_name, activity_desc, begin_date_time, end_date_time,
-               stock_count, take_count, state, creator, create_time, update_time
+               stock_count, stock_surplus_count, take_count, strategy_id, state, creator, create_time, update_time
         FROM activity
         WHERE activity_id = #{activityId}
     </select>
+
+
+    <!--默认情况下，mybatis 的 update 操作的返回值是 matched 的记录数，并不是受影响的记录数。-->
+    <update id="subtractionActivityStock" parameterType="java.lang.Long">
+        update activity set stock_surplus_count =stock_surplus_count-1
+        where activity_id=#{activityId} and stock_surplus_count>0
+    </update>
 
     <!--SQL 语句中使用了 MyBatis 的占位符 #{}，将 Activity 对象的属性值填充到 SQL 语句中。-->
 </mapper>

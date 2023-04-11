@@ -1,21 +1,22 @@
-package cn.icarus.lottery.application.process.req;
+package cn.icarus.lottery.rpc.req;
+
+import java.io.Serializable;
 
 /**
  * @author Icarus
- * @description 抽奖请求【用户ID、活动ID】
- * @date 2023/4/3 19:12
+ * @description 普通【非量化】抽奖请求【用户ID、活动ID】
+ * @date 2023/4/9 10:24
  */
-public class DrawProcessReq {
+public class DrawReq implements Serializable {
     /**用户ID*/
     private String uId;
-
     /**活动ID*/
     private Long activityId;
 
-    public DrawProcessReq() {
+    public DrawReq() {
     }
 
-    public DrawProcessReq(String uId, Long activityId) {
+    public DrawReq(String uId, Long activityId) {
         this.uId = uId;
         this.activityId = activityId;
     }

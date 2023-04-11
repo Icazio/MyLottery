@@ -91,8 +91,8 @@ public class ActivityRepository implements IActivityRepository {
         //封装结果信息
         ActivityBillVO activityBillVO=new ActivityBillVO();
         activityBillVO.setuId(req.getuId());
-        activityBillVO.setActivityName(activity.getActivityName());
         activityBillVO.setActivityId(req.getActivityId());
+        activityBillVO.setActivityName(activity.getActivityName());
         activityBillVO.setBeginDateTime(activity.getBeginDateTime());
         activityBillVO.setEndDateTime(activity.getEndDateTime());
         activityBillVO.setTakeCount(activity.getTakeCount());

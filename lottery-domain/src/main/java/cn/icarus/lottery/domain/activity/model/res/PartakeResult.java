@@ -14,7 +14,7 @@ public class PartakeResult extends Result {
     private Long strategyId;
 
     /**
-     * 活动单号
+     * 活动领取ID
      */
     private Long takeId;
 

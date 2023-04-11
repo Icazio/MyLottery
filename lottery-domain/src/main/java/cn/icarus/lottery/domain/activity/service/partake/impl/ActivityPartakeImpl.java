@@ -8,7 +8,6 @@ import cn.icarus.lottery.domain.activity.model.vo.DrawOrderVO;
 import cn.icarus.lottery.domain.activity.model.vo.UserTakeActivityVO;
 import cn.icarus.lottery.domain.activity.repository.IUserTakeActivityRepository;
 import cn.icarus.lottery.domain.activity.service.partake.BaseActivityPartake;
-import cn.icarus.lottery.domain.support.ids.IIdGenerator;
 import cn.icarus.middleware.db.router.strategy.IDBRouterStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.annotation.Resource;
-import java.util.Map;
 
 /**
  * @author Icarus
@@ -37,8 +35,6 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
     @Resource
     private IUserTakeActivityRepository userTakeActivityRepository;
     /**所需要的ID类型和它对应的生成器*/
-    @Resource
-    private Map<Constants.Ids, IIdGenerator> idGeneratorMap;
 
     @Override
     protected UserTakeActivityVO queryNoConsumedTakeActivityOrder(Long activityId, String uId) {
@@ -107,7 +103,7 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
      * @return Result.buildSuccessResult
      */
     @Override
-    protected Result grabActivity(PartakeReq partake, ActivityBillVO bill) {
+    protected Result grabActivity(PartakeReq partake, ActivityBillVO bill,Long takeId) {
         try {
             //将用户ID传到dbRouter中
             dbRouter.doRouter(partake.getuId());
@@ -125,10 +121,7 @@ public class ActivityPartakeImpl extends BaseActivityPartake {
                         //返回结果
                         return Result.buildResult(Constants.ResponseCode.NO_UPDATE);
                     }
-
                     // 插入领取活动信息
-                    //获取参与的单号:得到了雪花算法的生成器，用雪花算法生成器生成一个单号
-                    Long takeId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
                     //将这个参与的这次记录插入user_take_activity表中
                     userTakeActivityRepository.takeActivity(bill.getActivityId(), bill.getActivityName(), bill.getStrategyId(), bill.getTakeCount(), bill.getUserTakeLeftCount(), partake.getuId(), partake.getPartakeDate(), takeId);
                 } catch (DuplicateKeyException e) {

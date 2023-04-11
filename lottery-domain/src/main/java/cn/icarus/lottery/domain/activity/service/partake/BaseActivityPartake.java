@@ -6,6 +6,10 @@ import cn.icarus.lottery.domain.activity.model.req.PartakeReq;
 import cn.icarus.lottery.domain.activity.model.res.PartakeResult;
 import cn.icarus.lottery.domain.activity.model.vo.ActivityBillVO;
 import cn.icarus.lottery.domain.activity.model.vo.UserTakeActivityVO;
+import cn.icarus.lottery.domain.support.ids.IIdGenerator;
+
+import javax.annotation.Resource;
+import java.util.Map;
 
 /**
  * @author Icarus
@@ -14,6 +18,9 @@ import cn.icarus.lottery.domain.activity.model.vo.UserTakeActivityVO;
  */
 
 public abstract class BaseActivityPartake extends ActivityPartakeSupport implements IActivityPartake{
+
+    @Resource
+    private Map<Constants.Ids, IIdGenerator> idGeneratorMap;
 
     @Override
     /**
@@ -31,7 +38,7 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
            return buildPartakeResult(noConsumedTakeActivityOrder.getStrategyId(),noConsumedTakeActivityOrder.getTakeId());
        }
 
-        //查询活动账单
+        //2.查询活动账单
         //活动账单【库存、状态、日期、个人参与次数】
         //      * 用户ID uId; * 活动ID Long activityId;
         //      * 活动名称 String activityName;
@@ -44,7 +51,7 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
         //      * 已参加次数 Integer userTakeLeftCount;
          ActivityBillVO activityBillVO=super.queryActivityBill(req);
 
-        //活动信息校验处理【校验：①状态②日期③活动库存④个人参与次数】
+        //3.活动信息校验处理【校验：①状态②日期③活动库存④个人参与次数】
         //进入ActivityPartakeImpl去进行checkActivityBill
         /*Result有以下可能：
         *   ①校验活动状态：活动状态不是DOING，即正在活动中------——返回错误码&信息：活动当前状态非可用
@@ -59,7 +66,7 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
             return new PartakeResult(checkResult.getCode(),checkResult.getInfo());
         }
 
-        //扣减活动库存【目前为直接对配置库中的lottery.activity直接操作表扣减库存，后续优化为Redis扣减】
+        //4.扣减活动库存【目前为直接对配置库中的lottery.activity直接操作表扣减库存，后续优化为Redis扣减】
         /*可能的返回情况
         *  ①修改失败：Result(Constants.ResponseCode.NO_UPDATE)
         *  ②成功
@@ -70,25 +77,33 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
             return new PartakeResult(subtractionActivityResult.getCode(),subtractionActivityResult.getInfo());
         }
 
-        //领取活动信息【个人用户把活动信息写入到用户表】
+        //5.领取活动信息【个人用户把活动信息写入到用户表】
         /*可能的返回情况
         *   ①扣减个人已参与次数失败：返回Result(Constants.ResponseCode.NO_UPDATE);
         *   ②参加活动唯一索引冲突：返回Result(Constants.ResponseCode.INDEX_DUP)；
         *   ③成功--得到Result
         * */
-        Result grabResult=this.grabActivity(req,activityBillVO);
+        //获取参与的单号:得到了雪花算法的生成器，用雪花算法生成器生成一个单号
+        Long takeId = idGeneratorMap.get(Constants.Ids.SnowFlake).nextId();
+        Result grabResult=this.grabActivity(req,activityBillVO,takeId);
         if (!Constants.ResponseCode.SUCCESS.getCode().equals(grabResult.getCode())) {
             return new PartakeResult(grabResult.getCode(), grabResult.getInfo());
         }
 
         // 封装结果【返回的策略ID，用于继续完成抽奖步骤】
-        PartakeResult partakeResult = new PartakeResult(Constants.ResponseCode.SUCCESS.getCode(), Constants.ResponseCode.SUCCESS.getInfo());
-        partakeResult.setStrategyId(activityBillVO.getStrategyId());
-        return partakeResult;
+        return buildPartakeResult(activityBillVO.getStrategyId(),takeId);
     }
 
 
     //以下全都是辅助上面的那个方法，放在实现里面去完成
+
+    /**
+     * 查询未参与的订单
+     * @param activityId
+     * @param uId
+     * @return
+     */
+    protected abstract UserTakeActivityVO queryNoConsumedTakeActivityOrder(Long activityId, String uId);
 
     /**
      * 活动信息校验处理，把活动库存、状态、日期、个人参与次数
@@ -106,21 +121,14 @@ public abstract class BaseActivityPartake extends ActivityPartakeSupport impleme
     protected abstract Result subtractionActivityStock(PartakeReq req);
 
     /**
-     * 获取参与单号:用雪花算法生成器生成一个单号
      * 将这个参与的这次记录【ActivityId(), getActivityName(),TakeCount(), UserTakeLeftCount, uId，PartakeDate, takeId】插入user_take_activity表中
      * @param partake 参与活动请求
      * @param bill     活动账单
+     * @param takeId   活动领取ID
      * @return
      */
-    protected abstract Result grabActivity(PartakeReq partake,ActivityBillVO bill);
+    protected abstract Result grabActivity(PartakeReq partake,ActivityBillVO bill,Long takeId);
 
-    /**
-     * 查询未参与的订单
-     * @param activityId
-     * @param uId
-     * @return
-     */
-    protected abstract UserTakeActivityVO queryNoConsumedTakeActivityOrder(Long activityId, String uId);
 
     /**
      *
